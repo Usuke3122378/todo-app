@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block body %}
+  <h2>{{ "やることを編集" if todo else "やることを登録" }}</h2>
+
+  <form method="post">
+    <label>タイトル</label>
+    <input name="title" required value="{{ todo.title if todo else '' }}">
+
+    <label>内容</label>
+    <textarea name="content">{{ todo.content if todo else '' }}</textarea>
+
+    <label>期日</label>
+    <input type="date" name="due_date" required value="{{ todo.due_date if todo else '' }}">
+
+    <p>
+      <button class="btn" type="submit">保存する</button>
+      <a class="btn sub" href="{{ url_for('index') }}">戻る</a>
+    </p>
+  </form>
+{% endblock %}

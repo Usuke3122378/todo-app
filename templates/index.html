@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block body %}
+  <a class="btn" href="{{ url_for('new') }}">＋ やることを登録</a>
+
+  {% for todo in todos %}
+    <div class="card">
+      <h2>{{ todo.title }}</h2>
+      <div class="due">期日：{{ todo.due_date }}</div>
+      <div class="content">{{ todo.content }}</div>
+      <a href="{{ url_for('edit', todo_id=todo.id) }}">編集する</a>
+    </div>
+  {% else %}
+    <p>まだやることは登録されていません。</p>
+  {% endfor %}
+{% endblock %}
