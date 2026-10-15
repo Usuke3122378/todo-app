@@ -1,12 +1,33 @@
 {% extends "base.html" %}
 {% block body %}
-  <a class="btn" href="{{ url_for('new') }}">＋ やることを登録</a>
+  <form class="quick" method="post" action="{{ url_for('quick') }}">
+    <input name="text" required placeholder="例：来週金曜までに保育園の書類を出す 大事">
+    <button class="btn" type="submit">AIで登録</button>
+  </form>
+  <a class="btn sub" href="{{ url_for('new') }}">＋ 自分で入力して登録</a>
+
+  <div class="sort">
+    並び順：
+    <a class="{{ 'on' if sort == 'due' }}" href="{{ url_for('index', sort='due') }}">期日順</a>
+    <a class="{{ 'on' if sort == 'priority' }}" href="{{ url_for('index', sort='priority') }}">重要度順</a>
+  </div>
 
   {% for todo in todos %}
-    <div class="card">
-      <h2>{{ todo.title }}</h2>
-      <div class="due">期日：{{ todo.due_date }}</div>
+    {% set done = todo.done == "済" %}
+    <div class="card {{ 'done' if done }}">
+      <h2>
+        <span class="pri pri-{{ todo.priority or '中' }}">{{ todo.priority or "中" }}</span>
+        {{ todo.title }}
+      </h2>
+      <div class="due">
+        期日：{{ todo.due_date }}
+        {% if not done and todo.due_date|string < today %}<b>（期限切れ）</b>
+        {% elif not done and todo.due_date|string == today %}<b>（今日まで）</b>{% endif %}
+      </div>
       <div class="content">{{ todo.content }}</div>
+      <form class="inline" method="post" action="{{ url_for('toggle', todo_id=todo.id, sort=sort) }}">
+        <button class="btn small {{ 'sub' if done }}" type="submit">{{ "未完了に戻す" if done else "✓ 完了にする" }}</button>
+      </form>
       <a href="{{ url_for('edit', todo_id=todo.id) }}">編集する</a>
     </div>
   {% else %}

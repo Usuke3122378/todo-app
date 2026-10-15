@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 {% block body %}
-  <h2>{{ "やることを編集" if todo else "やることを登録" }}</h2>
+  <h2>{{ "やることを登録" if is_new else "やることを編集" }}</h2>
+  {% if message %}<p class="msg">{{ message }}</p>{% endif %}
 
-  <form method="post">
+  <form method="post" action="{{ url_for('new') if is_new else '' }}">
     <label>タイトル</label>
     <input name="title" required value="{{ todo.title if todo else '' }}">
 
@@ -11,6 +12,14 @@
 
     <label>期日</label>
     <input type="date" name="due_date" required value="{{ todo.due_date if todo else '' }}">
+
+    <label>重要度</label>
+    {% set pri = todo.priority if todo and todo.priority else "中" %}
+    <select name="priority">
+      {% for p in ["高", "中", "低"] %}
+        <option value="{{ p }}" {{ "selected" if p == pri }}>{{ p }}</option>
+      {% endfor %}
+    </select>
 
     <p>
       <button class="btn" type="submit">保存する</button>
